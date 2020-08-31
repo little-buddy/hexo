@@ -1,0 +1,89 @@
+# 其实就是一些文件打包发布 环境配置文件
+
+# Global configuration
+[build]
+base="./"
+publish="public/"
+command = "hexo g"
+
+# CI ci构建命令
+
+# netlify 在2019/10/03 才推出git repo文件的变更监控功能
+# 如果你不想使用该功能，可通过 ignore 配置一条 shell 命令替代
+# For example: 
+# ignore = "git diff --quiet HEAD^ HEAD sub_dir/"
+
+# [build.processing]
+#   skip_processing = true  所有其他设置都会被忽略
+
+[build.environment]
+# 环境变量
+
+# Production context:
+# All deploys from the main repository branch
+# will inherit these settings.
+[context.production]
+  command = "make production"
+# 这里的中括号表示一个json对象
+  [context.production.environment]
+    ACCESS_TOKEN = "super secret"
+# environment = { ACCESS_TOKEN = "super secret", NODE_VERSION = "8.0.1" }
+
+# Deploy Preview context:
+# All deploys generated from a pull/merge request
+# will inherit these settings.
+[context.deploy-preview.environment]
+  ACCESS_TOKEN = "not so secret"
+
+# Branch deploy context:
+# All deploys that are not from a pull/merge request
+# or from the production branch will inherit these settings.
+[context.branch-deploy]
+  command = "make staging"
+
+# Specific branch context:
+# Deploys from this branch will take these settings
+# and override their current ones.
+[context.feature]
+  command = "make feature"
+
+[context."features/branch"]
+  command = "gulp"
+
+
+# A basic redirect rule
+# 这里的重定向指的是单条定向记录，如果要指定要多条，需要按此格式多项指定
+[[redirects]]
+    from = "/*"
+    to = "/"
+    # status 指定重定向状态码，默认 302
+    # force=true 有文件名与路径名一致的时候，true能使它强制跳转成功
+# [redirects.query]
+    # id = :id from路径参数满足条件
+# [redirects.conditions]
+    # Language = ["en"]
+    # Country = ["US"]
+# [redirects.headers]
+    # X-From = "Netlify"
+    # X-Api-Key = "some-api-key-string"
+
+# 请求头信息配置，一些详细操作还是需要待确认的
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+
+  [headers.values]
+    # X-Frame-Options = "DENY"
+    # X-XSS-Protection = "1; mode=block"
+    # Content-Security-Policy = "frame-ancestors https://www.facebook.com"
+
+    # Multi-value headers are expressed with multi-line strings.
+	# cache-control = '''
+	# max-age=0,
+	# no-cache,
+	# no-store,
+	# must-revalidate'''
+
+    # Basic-Auth allows you to password protect your whole site.
+    # This feature may not be available on all plans.
+    # Basic-Auth = "someuser:somepassword anotheruser:anotherpassword"
